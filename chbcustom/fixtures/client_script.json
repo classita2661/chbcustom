@@ -1,1 +1,46 @@
-[]
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Payment Entry",
+  "enabled": 1,
+  "modified": "2025-07-10 15:46:35.400941",
+  "module": "CHBCustom",
+  "name": "Post Date",
+  "script": "frappe.ui.form.on('Payment Entry', {\r\n    // Set default when form loads\r\n    onload: function(frm) {\r\n        if (!frm.doc.custom_post_date) {\r\n            frm.set_value('custom_post_date', frappe.datetime.get_today());\r\n        }\r\n    },\r\n    \r\n    // Copy posting date to custom field\r\n    posting_date: function(frm) {\r\n        if (frm.doc.posting_date) {\r\n            frm.set_value('custom_post_date', frm.doc.posting_date);\r\n        }\r\n    },\r\n    \r\n    // Initialize on form load\r\n    refresh: function(frm) {\r\n        if (frm.doc.posting_date && !frm.doc.custom_post_date) {\r\n            frm.set_value('custom_post_date', frm.doc.posting_date);\r\n        }\r\n    }\r\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Payment Entry",
+  "enabled": 1,
+  "modified": "2025-07-10 15:46:29.129508",
+  "module": "CHBCustom",
+  "name": "Payment Entry FY",
+  "script": "frappe.ui.form.on('Payment Entry', {\r\n    setup: function(frm) {\r\n        // Set default posting date to today if empty\r\n        if (!frm.doc.custom_post_date) {\r\n            frm.set_value('custom_post_date', frappe.datetime.get_today());\r\n        }\r\n    },\r\n    \r\n    custom_post_date: function(frm) {\r\n        // Use today's date if posting date is empty\r\n        const targetDate = frm.doc.custom_post_date || frappe.datetime.get_today();\r\n        \r\n        frappe.call({\r\n            method: 'frappe.client.get_value',\r\n            args: {\r\n                'doctype': 'Fiscal Year',\r\n                'filters': {\r\n                    'year_start_date': ['<=', targetDate],\r\n                    'year_end_date': ['>=', targetDate]\r\n                },\r\n                'fieldname': 'year_end_date'\r\n            },\r\n            callback: function(r) {\r\n                if (r.message && r.message.year_end_date) {\r\n                    // Extract just the year portion (YYYY-MM-DD → YYYY)\r\n                    const fiscalYearEnd = r.message.year_end_date.split('-')[0];\r\n                    frm.set_value('custom_fiscal_year_end', fiscalYearEnd);\r\n                } else {\r\n                    frappe.msgprint(__(\"No fiscal year found for this date. Please check Fiscal Year settings.\"));\r\n                }\r\n            }\r\n        });\r\n    },\r\n    \r\n    refresh: function(frm) {\r\n        // Initialize if values are empty\r\n        if (!frm.doc.custom_post_date) {\r\n            this.setup(frm);\r\n        }\r\n        if (!frm.doc.custom_fiscal_year_end && frm.doc.custom_post_date) {\r\n            this.custom_post_date(frm);\r\n        }\r\n    }\r\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Journal Entry",
+  "enabled": 1,
+  "modified": "2025-07-10 15:46:48.117453",
+  "module": "CHBCustom",
+  "name": "JV Post Date",
+  "script": "frappe.ui.form.on('Journal Entry', {\r\n    // Set default when form loads\r\n    onload: function(frm) {\r\n        if (!frm.doc.custom_jv_post_date) {\r\n            frm.set_value('custom_jv_post_date', frappe.datetime.get_today());\r\n        }\r\n    },\r\n    \r\n    // Copy posting date to custom field\r\n    posting_date: function(frm) {\r\n        if (frm.doc.posting_date) {\r\n            frm.set_value('custom_jv_post_date', frm.doc.posting_date);\r\n        }\r\n    },\r\n    \r\n    // Initialize on form load\r\n    refresh: function(frm) {\r\n        if (frm.doc.posting_date && !frm.doc.custom_jv_post_date) {\r\n            frm.set_value('custom_jv_post_date', frm.doc.posting_date);\r\n        }\r\n    }\r\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Journal Entry",
+  "enabled": 1,
+  "modified": "2025-07-10 15:46:41.437287",
+  "module": "CHBCustom",
+  "name": "JV FY",
+  "script": "frappe.ui.form.on('Journal Entry', {\r\n    setup: function(frm) {\r\n        // Set default posting date to today if empty\r\n        if (!frm.doc.custom_jv_post_date) {\r\n            frm.set_value('custom_jv_post_date', frappe.datetime.get_today());\r\n        }\r\n    },\r\n    \r\n    custom_jv_post_date: function(frm) {\r\n        // Use today's date if posting date is empty\r\n        const targetDate = frm.doc.custom_jv_post_date || frappe.datetime.get_today();\r\n        \r\n        frappe.call({\r\n            method: 'frappe.client.get_value',\r\n            args: {\r\n                'doctype': 'Fiscal Year',\r\n                'filters': {\r\n                    'year_start_date': ['<=', targetDate],\r\n                    'year_end_date': ['>=', targetDate]\r\n                },\r\n                'fieldname': 'year_end_date'\r\n            },\r\n            callback: function(r) {\r\n                if (r.message && r.message.year_end_date) {\r\n                    // Extract just the year portion (YYYY-MM-DD → YYYY)\r\n                    const fiscalYearEnd = r.message.year_end_date.split('-')[0];\r\n                    frm.set_value('custom_jv_fy', fiscalYearEnd);\r\n                } else {\r\n                    frappe.msgprint(__(\"No fiscal year found for this date. Please check Fiscal Year settings.\"));\r\n                }\r\n            }\r\n        });\r\n    },\r\n    \r\n    refresh: function(frm) {\r\n        // Initialize if values are empty\r\n        if (!frm.doc.custom_jv_post_date) {\r\n            this.setup(frm);\r\n        }\r\n        if (!frm.doc.custom_jv_fy && frm.doc.custom_jv_post_date) {\r\n            this.custom_jv_post_date(frm);\r\n        }\r\n    }\r\n});",
+  "view": "Form"
+ }
+]
