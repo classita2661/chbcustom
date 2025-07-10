@@ -242,10 +242,3 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-fixtures = [
-	{"dt":"Custom Field", "filters" : [["module", "=", "CHBCustom"]]},
-	
-	{"dt":"Client Script", "filters" : [["module", "=", "CHBCustom"]]},
-
-	 {"dt":"Print Format", "filters" : [["module", "=", "CHBCustom"]]}
-]
