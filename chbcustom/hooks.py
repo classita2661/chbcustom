@@ -243,7 +243,9 @@ app_license = "mit"
 # }
 
 fixtures = [
- 	{"dt":"Custom Field", "filters" : [["module", "=", "CHBCustom"]]},
+	{"dt":"Property Setter", "filters" : [["module", "=", "CHBCustom"]]},
+ 	
+	{"dt":"Custom Field", "filters" : [["module", "=", "CHBCustom"]]},
 
     	{"dt":"Client Script", "filters" : [["module", "=", "CHBCustom"]]},
 
